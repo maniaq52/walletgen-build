@@ -12,6 +12,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
       - name: Setup vcpkg
         uses: actions/checkout@v4
         with:
@@ -22,14 +25,13 @@ jobs:
         run: .\vcpkg\bootstrap-vcpkg.bat
 
       - name: Install OpenSSL
-        run: .\vcpkg\vcpkg install openssl:x64-windows --triplet x64-windows
+        run: .\vcpkg\vcpkg install openssl:x64-windows
 
       - name: Integrate vcpkg
         run: .\vcpkg\vcpkg integrate install
 
       - name: Build with MSBuild
-        run: |
-          msbuild CryptoWalletGen.sln /p:Configuration=Release /p:Platform=x64 /p:VcpkgRoot=C:\vcpkg /p:UseEnv=true
+        run: msbuild CryptoWalletGen.sln /p:Configuration=Release /p:Platform=x64
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
